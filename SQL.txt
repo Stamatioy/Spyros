@@ -1,0 +1,89 @@
+(SELECT project_id,Title from project where Starting_Date = '')
+intersect
+(SELECT project_id,Title from project where Duration = '')
+intersect
+(SELECT project_id,Title from project where Executive_id = '')
+
+Select Name from program where administration =''
+
+
+Select S.Organization_Name, T.Organization_Name
+from organisation as S, organisation as T
+where (count(distinct S.project_id) = count(distinct T.project_id)) 
+      		and count(distinct S.project_id)>=10
+			and  S.Organisation_name != P.Organisation_name )
+
+
+Select S.project_id, T.Researcher_id
+from Sc_Field_of_Project as S, Works_on as T
+where S.Field_Name = '' and S.Project_id in( select
+						sele
+
+SELECT count(distinct T.project_id), S.First_name,S.Last_name 
+FROM project as T, researcher as S  
+WHERE(S.age < 40 and T.project_id = S.project_id)
+
+SELECT researcher_id,First_name,Last_name,S.project_id
+FROM researcher  
+WHERE age<40 AND researcher_id in
+  (Select S.researcher_id
+   FROM Works_on as S
+   WHERE  S.project_id in
+    (SELECT project_id 
+     FROM project
+     WHERE ending_date is null))
+
+
+
+
+////
+SELECT Field_Name,R.First_Name,R.Last_Name FROM Sc_field_of_project WHERE project_id in 
+	(SELECT project_id FROM works_on WHERE researcher_id in
+		(SELECT researcher_id FROM researcher as R WHERE (year(date) - year(starting_date)) <=1)
+////
+SELECT Field_Name,
+SELECT P.Organisation_name, S.Organisation_name
+FROM project as P, project as S WHERE P. 
+
+/*
+SELECT  Organisation_name FROM project
+WHERE (count(project_id) >=10 and year(duration) <= 2)
+
+
+SELECT first_Name, Last_name, R.count(project_id) FROM researcher WHERE age<40 and researcher_id IN
+  (SELECT R.researcher_id FROM works_on as R WHERE count(project_id) = max(count(project_id))
+*/
+
+
+
+
+ //no   
+SELECT first_Name, Last_name, R.count(project_id) FROM researcher WHERE researcher_id IN
+  (SELECT R.researcher_id FROM works_on as R WHERE count(R.project_id) = max(count(R.project_id)) 
+   and R.researcher_id  = (SELECT researcher_id FROM researcher WHERE age<40) and R.project_id = (SELECT project_id FROM project WHERE duration is null))
+
+//*this 3.6
+SELECT first_Name, Last_name, R.count(project_id) FROM researcher WHERE researcher_id IN
+  (SELECT R.researcher_id FROM works_on as R WHERE count(R.project_id) = max(count(R.project_id)) 
+   and R.researcher_id  IN (SELECT researcher_id FROM researcher WHERE age<40) and R.project_id IN (SELECT project_id FROM project WHERE duration is null)
+   group by(R.researcher_id))
+
+//3.8
+SELECT First_Name, Last_Name FROM researcher WHERE Researcher_id IN
+  (SELECT Researcher_id FROM works_on WHERE count(project_id) >=5 and project_id NOT IN
+     (SELECT project_id FROM deliverable)
+      group by(Researcher_id))
+
+//3.7
+SELECT First_Name, Last_Name, E.funding_amount FROM executive WHERE Executive_id IN
+  (SELECT E.Executive_id FROM Project as E
+   order by(sum(E.funding_amount)) 
+   desc
+   LIMIT 5 )
+
+
+SELECT E.First_Name, E.Last_Name sum(P.funding_amount) as contributed_amount FROM Executive as E 
+  LEFT JOIN project as P ON (E.Executive_id = P.Executive_id and 
+  LEFT JOIN Organisation as O ON (O.Oganisation_name = P.Organisation_name) 
+order by(P.funding_amount) desc
+LIMIT 5	
